@@ -65,6 +65,9 @@
         <h2>Uploaded files</h2>
             <ul id="fileList"></ul>
         </div>
+        <h2>Containers</h2>
+            <ul id="containersList"></ul>
+        </div>
     </div>
 </main>
 
@@ -90,11 +93,30 @@
         });
     }
 
+        // Grab containers from backend api
+    function fetchContainers() {
+        // Fetch Containers
+        $.get("api/Containers", function(fetchedContainers) {
+
+            var newList = $('<ul id="containersList" />')
+
+            $.each(fetchedContainers, function(index, value) {
+                var li = $('<li/>').appendTo(containersList)
+                $('<span/>').text(value).appendTo(li)
+                newList.append(li)
+            })
+
+            $('#containersList').replaceWith(newList)
+        });
+    }
+
     // Start first interval
     fetchLinks()
+    fetchContainers()
     
     setInterval(function() {
         fetchLinks()
+        fetchContainers()
     }, 5000) 
 
     /* Dropzone */

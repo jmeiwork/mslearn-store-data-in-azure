@@ -58,6 +58,29 @@ namespace FileUploader.Models
             return names;
         }
 
+        public async Task<IEnumerable<string>> GetContainers()
+        {
+            List<string> containerNames = new List<string>();
+
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(storageConfig.ConnectionString);
+            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+
+            BlobContinuationToken continuationToken = null;
+            ContainerResultSegment resultSegment = null;
+
+            do
+            {
+                resultSegment = await blobClient.ListContainersSegmentedAsync(continuationToken);
+
+                // Get the name of each blob.
+                containerNames.AddRange(resultSegment.Results.OfType<CloudBlobContainer>().Select(b => b.Name));
+
+                continuationToken = resultSegment.ContinuationToken;
+            } while (continuationToken != null);
+
+            return containerNames;
+        }
+
         public Task<Stream> Load(string name)
         {
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(storageConfig.ConnectionString);

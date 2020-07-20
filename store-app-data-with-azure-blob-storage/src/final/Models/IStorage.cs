@@ -8,6 +8,8 @@ namespace FileUploader.Models
     {
         Task Save(Stream fileStream, string name);
         Task<IEnumerable<string>> GetNames();
+
+        Task<IEnumerable<string>> GetContainers();
         Task<Stream> Load(string name);
     }
 }
